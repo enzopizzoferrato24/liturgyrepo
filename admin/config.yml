@@ -1,0 +1,72 @@
+backend:
+  name: git-gateway
+  branch: master
+
+# Uncomment for local development
+# local_backend: true
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "entries"
+    label: "Liturgical Entries"
+    label_singular: "Entry"
+    folder: "data/entries"
+    create: true
+    slug: "{{year}}-{{slug}}"
+    identifier_field: "author"
+    summary: "{{author}} - {{title}} ({{date}})"
+    editor:
+      preview: false
+    fields:
+      - { label: "ID", name: "id", widget: "number", value_type: "int", required: true, hint: "Unique entry ID" }
+      - { label: "Author", name: "author", widget: "string", required: true }
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Date", name: "date", widget: "string", required: false, hint: "e.g. (†430) or ca. 1130" }
+      - { label: "Year", name: "year", widget: "number", value_type: "int", required: false, hint: "Numeric year for filtering" }
+      - { label: "PL Reference", name: "pl", widget: "string", required: false, hint: "e.g. PL 172, 541-738" }
+      - { label: "Editions", name: "editions", widget: "text", required: false }
+      - { label: "Remarks", name: "remarks", widget: "text", required: false }
+      - { label: "External Link", name: "link", widget: "string", required: false, hint: "URL to digital edition or resource" }
+      - { label: "Order / Rank", name: "order_rank", widget: "string", required: false, hint: "e.g. Bishop, Monk, Abbot" }
+      - { label: "Localization", name: "localization", widget: "string", required: false, hint: "e.g. Paris, Rome, Regensburg" }
+      - { label: "Dedicatee", name: "dedicatee", widget: "string", required: false }
+      - { label: "Translations", name: "translations", widget: "string", required: false, hint: "e.g. English, French, German" }
+      - label: "Historical Era"
+        name: "era"
+        widget: "select"
+        required: true
+        options:
+          - "I. THE EARLY CHRISTIAN ERA"
+          - "II. MEDIEVAL LITURGISTS"
+          - "Later Carolingian period"
+          - "11th Century"
+          - "12th Century"
+          - "13th Century"
+          - "14th Century"
+          - "15th Century"
+          - "Johannes Hagen (de Indagine)"
+          - "Stanislas de Snoyna"
+          - "Devotional Miscellaney"
+          - "16th Century"
+          - "Texts from William Legg, Tracts"
+          - "XVII AND XVIII CENTURIES"
+          - "Ritual-rubrical-polemical commentators:"
+      - { label: "Latitude", name: "lat", widget: "number", value_type: "float", required: false, hint: "Decimal degrees (e.g. 48.8566)" }
+      - { label: "Longitude", name: "lon", widget: "number", value_type: "float", required: false, hint: "Decimal degrees (e.g. 2.3522)" }
+
+  - name: "eras"
+    label: "Historical Eras"
+    label_singular: "Era"
+    folder: "data/eras"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: "name"
+    editor:
+      preview: false
+    fields:
+      - { label: "Era Name", name: "name", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text", required: false }
+      - { label: "Start Year", name: "start_year", widget: "number", value_type: "int", required: false }
+      - { label: "End Year", name: "end_year", widget: "number", value_type: "int", required: false }

@@ -5727,18 +5727,6 @@
   ],
   "eras": [
     {
-      "id": 0,
-      "name": "I. THE EARLY CHRISTIAN ERA"
-    },
-    {
-      "id": 1,
-      "name": "II. MEDIEVAL LITURGISTS"
-    },
-    {
-      "id": 2,
-      "name": "Later Carolingian period"
-    },
-    {
       "id": 3,
       "name": "11th Century"
     },
@@ -5759,20 +5747,36 @@
       "name": "15th Century"
     },
     {
-      "id": 8,
-      "name": "Johannes Hagen (de Indagine)"
-    },
-    {
-      "id": 9,
-      "name": "Stanislas de Snoyna"
+      "id": 11,
+      "name": "16th Century"
     },
     {
       "id": 10,
       "name": "Devotional Miscellaney"
     },
     {
-      "id": 11,
-      "name": "16th Century"
+      "id": 0,
+      "name": "I. THE EARLY CHRISTIAN ERA"
+    },
+    {
+      "id": 1,
+      "name": "II. MEDIEVAL LITURGISTS"
+    },
+    {
+      "id": 8,
+      "name": "Johannes Hagen (de Indagine)"
+    },
+    {
+      "id": 2,
+      "name": "Later Carolingian period"
+    },
+    {
+      "id": 14,
+      "name": "Ritual-rubrical-polemical commentators:"
+    },
+    {
+      "id": 9,
+      "name": "Stanislas de Snoyna"
     },
     {
       "id": 12,
@@ -5781,10 +5785,6 @@
     {
       "id": 13,
       "name": "XVII AND XVIII CENTURIES"
-    },
-    {
-      "id": 14,
-      "name": "Ritual-rubrical-polemical commentators:"
     }
   ]
 }

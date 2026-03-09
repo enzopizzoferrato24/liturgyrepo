@@ -1,0 +1,16 @@
+{
+  "name": "liturgical-commentary-index",
+  "version": "1.0.0",
+  "description": "A scholarly index of liturgical commentaries from the Early Christian Era through the 18th century",
+  "scripts": {
+    "build": "node build-data.js",
+    "split": "node split-data.js",
+    "serve": "python3 -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enzopizzoferrato24/liturgyrepo"
+  },
+  "author": "",
+  "license": "MIT"
+}

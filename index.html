@@ -15,6 +15,9 @@
 
   <!-- Site CSS -->
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- Netlify Identity Widget -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
 
@@ -440,6 +443,19 @@
 
   // Map page: override route to use flex
   const _origRoute = window.route;
+</script>
+
+<script>
+  // Netlify Identity redirect handling
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
 </script>
 </body>
 </html>
