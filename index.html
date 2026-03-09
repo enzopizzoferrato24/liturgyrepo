@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liturgical Commentary Index — Vogel</title>
+  <meta name="description" content="A scholarly index of liturgical commentaries from the Early Christian Era through the 18th century, based on the Vogel Index.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Site CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#home" class="nav-brand">Liturgical Commentary Index</a>
+    <ul class="nav-links">
+      <li><a href="#home"   data-page="home">Home</a></li>
+      <li><a href="#browse" data-page="browse">Browse</a></li>
+      <li><a href="#eras"   data-page="eras">By Era</a></li>
+      <li><a href="#map"    data-page="map">Map</a></li>
+      <li><a href="#submit" data-page="submit">Submit Entry</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════════════════════════ -->
+<div id="page-home" class="page-section" style="display:none;">
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Liturgical Commentary Index</h1>
+      <p>A scholarly index of liturgical commentaries from the Early Christian Era through the 18th century, based on the Vogel Index.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid">
+      <div class="stat-card"><div class="number" id="stat-total">—</div><div class="label">Total Entries</div></div>
+      <div class="stat-card"><div class="number" id="stat-eras">—</div><div class="label">Historical Eras</div></div>
+      <div class="stat-card"><div class="number" id="stat-coords">—</div><div class="label">Mapped Locations</div></div>
+      <div class="stat-card"><div class="number" id="stat-links">—</div><div class="label">External Links</div></div>
+      <div class="stat-card"><div class="number" id="stat-trans">—</div><div class="label">With Translations</div></div>
+    </div>
+
+    <!-- Quick search -->
+    <div class="card" style="margin-bottom:2rem;">
+      <div class="quick-search">
+        <input type="text" id="home-search" placeholder="Search by author, title, location, remarks…" autocomplete="off">
+        <button class="btn btn-primary" onclick="doHomeSearch()">Search</button>
+        <a href="#browse" class="btn btn-secondary">Browse All</a>
+      </div>
+    </div>
+
+    <!-- Era cards -->
+    <div class="page-header" style="margin-top:0.5rem;">
+      <h1 style="font-size:1.6rem;">Entries by Historical Era</h1>
+    </div>
+    <div class="era-grid" id="era-cards-home"></div>
+
+    <!-- Feature cards -->
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h3>Browse &amp; Filter</h3>
+        <p>Search by author, title, or keywords. Filter by era, location, religious order, and more.</p>
+        <a href="#browse" class="btn btn-primary btn-sm">Open Browser</a>
+      </div>
+      <div class="feature-card">
+        <h3>Browse by Era</h3>
+        <p>Explore commentaries organised by historical period from the Early Christian Era to the 18th century.</p>
+        <a href="#eras" class="btn btn-primary btn-sm">View Eras</a>
+      </div>
+      <div class="feature-card">
+        <h3>Interactive Map</h3>
+        <p>Visualise the geographic spread of liturgical scholarship with a century-by-century slider.</p>
+        <a href="#map" class="btn btn-primary btn-sm">Open Map</a>
+      </div>
+      <div class="feature-card">
+        <h3>Submit an Entry</h3>
+        <p>Know of a commentary not yet in the index? Submit it for review and potential inclusion.</p>
+        <a href="#submit" class="btn btn-primary btn-sm">Submit Entry</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Liturgical Commentary Index &mdash; Based on the Vogel Index &mdash;
+      <a href="#browse">Browse all entries</a> &mdash;
+      <a href="https://github.com" target="_blank" rel="noopener">View on GitHub</a>
+    </p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     BROWSE PAGE
+══════════════════════════════════════════════════════════ -->
+<div id="page-browse" class="page-section" style="display:none;">
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Browse Commentaries</h1>
+      <p>Search and filter the full index.</p>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="filter-row">
+        <div class="filter-group" style="flex:2;min-width:200px;">
+          <label for="filter-q">Search</label>
+          <input type="text" id="filter-q" placeholder="Author, title, keywords…" autocomplete="off">
+        </div>
+        <div class="filter-group">
+          <label for="filter-era">Era</label>
+          <select id="filter-era"><option value="">All Eras</option></select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-location">Location</label>
+          <input type="text" id="filter-location" placeholder="e.g. Paris, Rome…">
+        </div>
+        <div class="filter-group">
+          <label for="filter-rank">Order / Rank</label>
+          <input type="text" id="filter-rank" placeholder="e.g. Bishop, Monk…">
+        </div>
+      </div>
+      <div class="filter-row" style="margin-top:0.75rem;">
+        <div class="checkbox-row">
+          <label class="checkbox-label"><input type="checkbox" id="filter-trans"> Has translations</label>
+          <label class="checkbox-label"><input type="checkbox" id="filter-link"> Has external link</label>
+          <label class="checkbox-label"><input type="checkbox" id="filter-coords"> On map</label>
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-left:auto;">
+          <button class="btn btn-primary" onclick="applyFilters()">Filter</button>
+          <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-info" id="results-info">Loading…</div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th data-sort="author" onclick="setSortCol('author')">Author</th>
+            <th data-sort="title"  onclick="setSortCol('title')">Title</th>
+            <th data-sort="date"   onclick="setSortCol('date')">Date</th>
+            <th data-sort="era"    onclick="setSortCol('era')">Era</th>
+            <th data-sort="localization" onclick="setSortCol('localization')">Location</th>
+            <th data-sort="order_rank"   onclick="setSortCol('order_rank')">Order / Rank</th>
+            <th>Info</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="browse-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <footer>
+    <p>Liturgical Commentary Index &mdash; <a href="#home">Home</a></p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     ERAS PAGE
+══════════════════════════════════════════════════════════ -->
+<div id="page-eras" class="page-section" style="display:none;">
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Browse by Historical Era</h1>
+      <p>Liturgical commentaries organised by historical period. Click an era card to expand its entries.</p>
+    </div>
+    <div id="eras-container"></div>
+  </div>
+
+  <footer>
+    <p>Liturgical Commentary Index &mdash; <a href="#home">Home</a></p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MAP PAGE
+══════════════════════════════════════════════════════════ -->
+<div id="page-map" class="page-section" style="display:none;">
+  <!-- Map controls bar -->
+  <div id="map-controls">
+    <label for="century-slider">Century:</label>
+    <input type="range" id="century-slider" min="0" max="11" value="0" step="1">
+    <div id="century-display">All Periods</div>
+    <div id="map-count" style="color:var(--parchment-dark);font-size:0.8rem;min-width:100px;text-align:right;">— entries</div>
+  </div>
+
+  <!-- Map legend -->
+  <div style="background:var(--parchment-dark);padding:0.5rem 1.5rem;font-size:0.8rem;color:var(--ink-light);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+    <span>Use the slider above to filter by century. Click any marker for details.</span>
+    <span>Entries without coordinates are not shown — <a href="#browse?has_coords=1" style="color:var(--crimson);">browse mapped entries</a>.</span>
+  </div>
+
+  <!-- Leaflet map -->
+  <div id="kepler-container" style="flex:1;position:relative;">
+    <div id="leaflet-map" style="width:100%;height:100%;"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SUBMIT PAGE
+══════════════════════════════════════════════════════════ -->
+<div id="page-submit" class="page-section" style="display:none;">
+  <div class="page-wrapper">
+    <div class="page-header">
+      <h1>Submit a New Entry</h1>
+      <p>Know of a liturgical commentary not yet in the index? Fill in the form below to propose an addition. All submissions are reviewed before inclusion.</p>
+    </div>
+
+    <div class="form-card">
+      <div class="form-success" id="form-success">
+        <strong>Thank you for your submission!</strong> Your proposed entry has been received and will be reviewed for inclusion in the index.
+      </div>
+
+      <form id="submit-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <!-- Formspree hidden fields -->
+        <input type="hidden" name="_subject" value="New Liturgical Commentary Index Submission">
+        <input type="hidden" name="_next" value="">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="submit-author">Author <span class="req">*</span></label>
+            <input type="text" id="submit-author" name="author" required placeholder="e.g. Honorius of Autun">
+          </div>
+          <div class="form-group">
+            <label for="submit-date">Date of Composition</label>
+            <input type="text" id="submit-date" name="date" placeholder="e.g. ca. 1130, (†1145)">
+          </div>
+          <div class="form-group full">
+            <label for="submit-title">Title <span class="req">*</span></label>
+            <input type="text" id="submit-title" name="title" required placeholder="e.g. Gemma animae">
+          </div>
+          <div class="form-group">
+            <label for="submit-era">Historical Era</label>
+            <select id="submit-era" name="era">
+              <option value="">— Select era —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="submit-localization">Localization</label>
+            <input type="text" id="submit-localization" name="localization" placeholder="e.g. Regensburg, Germany">
+          </div>
+          <div class="form-group">
+            <label for="submit-order-rank">Order / Rank</label>
+            <input type="text" id="submit-order-rank" name="order_rank" placeholder="e.g. Benedictine monk, Bishop">
+          </div>
+          <div class="form-group">
+            <label for="submit-pl">PL Reference</label>
+            <input type="text" id="submit-pl" name="pl" placeholder="e.g. PL 172, 541–738">
+          </div>
+          <div class="form-group full">
+            <label for="submit-editions">Editions</label>
+            <textarea id="submit-editions" name="editions" placeholder="List known critical editions, with full bibliographic details…"></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="submit-remarks">Remarks</label>
+            <textarea id="submit-remarks" name="remarks" placeholder="Any additional scholarly notes, manuscript tradition, reception history…"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="submit-translations">Translations</label>
+            <input type="text" id="submit-translations" name="translations" placeholder="e.g. English, French, German">
+          </div>
+          <div class="form-group">
+            <label for="submit-dedicatee">Dedicatee</label>
+            <input type="text" id="submit-dedicatee" name="dedicatee" placeholder="e.g. Pope Innocent III">
+          </div>
+          <div class="form-group full">
+            <label for="submit-link">External Link</label>
+            <input type="url" id="submit-link" name="link" placeholder="https://…">
+            <span class="form-note">Link to a digital edition, library catalogue, or relevant resource.</span>
+          </div>
+          <div class="form-group">
+            <label for="submit-lat">Latitude (decimal degrees)</label>
+            <input type="number" id="submit-lat" name="latitude" step="0.0001" placeholder="e.g. 48.8566">
+            <span class="form-note">For the author's primary location.</span>
+          </div>
+          <div class="form-group">
+            <label for="submit-lon">Longitude (decimal degrees)</label>
+            <input type="number" id="submit-lon" name="longitude" step="0.0001" placeholder="e.g. 2.3522">
+          </div>
+          <div class="form-group full" style="border-top:1px solid var(--border);padding-top:1rem;margin-top:0.5rem;">
+            <label for="submit-submitter">Your Name / Institution <span class="req">*</span></label>
+            <input type="text" id="submit-submitter" name="submitter" required placeholder="For attribution and follow-up questions">
+          </div>
+          <div class="form-group full">
+            <label for="submit-email">Contact Email</label>
+            <input type="email" id="submit-email" name="email" placeholder="Optional — for follow-up only">
+          </div>
+          <div class="form-group full">
+            <label for="submit-notes">Additional Notes</label>
+            <textarea id="submit-notes" name="notes" placeholder="Anything else you'd like the editors to know…"></textarea>
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+          <button type="submit" class="btn btn-primary">Submit Entry</button>
+          <button type="reset" class="btn btn-secondary">Clear Form</button>
+          <span style="font-size:0.8rem;color:var(--ink-light);">Fields marked <span style="color:var(--crimson);">*</span> are required.</span>
+        </div>
+      </form>
+
+      <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+        <h3 style="font-family:'EB Garamond',serif;color:var(--crimson);font-size:1.1rem;margin-bottom:0.75rem;">Alternative: Submit via Email</h3>
+        <p style="font-size:0.875rem;color:var(--ink-light);line-height:1.6;">
+          You may also submit entries by email. Please include all available bibliographic information
+          (author, title, date, editions, PL reference, localization, and any remarks) in your message.
+          Attach any relevant scanned sources or digital files where possible.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Liturgical Commentary Index &mdash; <a href="#home">Home</a></p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     DETAIL MODAL
+══════════════════════════════════════════════════════════ -->
+<div id="modal-overlay" class="modal-overlay" style="display:none;" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h2 id="modal-title"></h2>
+        <div id="modal-author" style="color:var(--parchment-dark);font-size:0.875rem;margin-top:0.25rem;"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/app.js"></script>
+<script>
+  // Home search shortcut
+  function doHomeSearch() {
+    const q = document.getElementById('home-search').value.trim();
+    if (q) navigate('browse', { q });
+    else navigate('browse');
+  }
+  document.getElementById('home-search').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doHomeSearch();
+  });
+
+  // Filter inputs — live search on Enter
+  ['filter-q','filter-location','filter-rank'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') applyFilters();
+    });
+  });
+
+  // Reset filters
+  function resetFilters() {
+    document.getElementById('filter-q').value = '';
+    document.getElementById('filter-era').value = '';
+    document.getElementById('filter-location').value = '';
+    document.getElementById('filter-rank').value = '';
+    document.getElementById('filter-trans').checked = false;
+    document.getElementById('filter-link').checked  = false;
+    document.getElementById('filter-coords').checked = false;
+    sortCol = null; sortDir = 'asc';
+    document.querySelectorAll('thead th[data-sort]').forEach(th => th.classList.remove('sort-asc','sort-desc'));
+    applyFilters();
+  }
+
+  // Modal overlay click-outside to close
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Form submission handling
+  document.getElementById('submit-form').addEventListener('submit', function(e) {
+    const action = this.action;
+    if (action.includes('YOUR_FORM_ID')) {
+      // Demo mode: show success without actually submitting
+      e.preventDefault();
+      document.getElementById('form-success').classList.add('visible');
+      this.reset();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    // Real Formspree submission
+    e.preventDefault();
+    fetch(action, {
+      method: 'POST',
+      body: new FormData(this),
+      headers: { 'Accept': 'application/json' }
+    }).then(r => {
+      if (r.ok) {
+        document.getElementById('form-success').classList.add('visible');
+        this.reset();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        alert('Submission failed. Please try again or contact us by email.');
+      }
+    }).catch(() => {
+      alert('Network error. Please try again or contact us by email.');
+    });
+  });
+
+  // Map page: override route to use flex
+  const _origRoute = window.route;
+</script>
+</body>
+</html>
