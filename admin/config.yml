@@ -1,6 +1,6 @@
 backend:
   name: git-gateway
-  branch: master
+  branch: main
 
 # Uncomment for local development
 # local_backend: true
