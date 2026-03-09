@@ -240,9 +240,18 @@ function openDetail(id) {
 
   const field = (label, val, isLink) => {
     if (!val) return '';
-    const v = isLink
-      ? `<a href="${escHtml(val)}" target="_blank" rel="noopener">${escHtml(truncate(val, 70))}</a>`
-      : escHtml(val);
+    let v;
+    if (isLink) {
+      if (isPdfLink(val)) {
+        // PDF links open in internal viewer
+        v = `<a href="#" onclick="openPdfModal('${escHtml(val)}', '${escHtml(e.title || 'Document')}'); return false;" style="color:var(--crimson);">${escHtml(truncate(val, 70))}</a>`;
+      } else {
+        // Non-PDF links open in new tab
+        v = `<a href="${escHtml(val)}" target="_blank" rel="noopener">${escHtml(truncate(val, 70))}</a>`;
+      }
+    } else {
+      v = escHtml(val);
+    }
     return `<div class="detail-field"><div class="detail-label">${label}</div><div class="detail-value">${v}</div></div>`;
   };
 
@@ -278,6 +287,30 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
+// ── PDF MODAL ─────────────────────────────────────────────
+function openPdfModal(url, title) {
+  document.getElementById('pdf-modal-title').textContent = title || 'Document Viewer';
+  document.getElementById('pdf-iframe').src = url;
+  document.getElementById('pdf-modal-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closePdfModal() {
+  document.getElementById('pdf-modal-overlay').style.display = 'none';
+  document.getElementById('pdf-iframe').src = '';
+  document.body.style.overflow = '';
+}
+
+function handlePdfOverlayClick(e) {
+  if (e.target === document.getElementById('pdf-modal-overlay')) closePdfModal();
+}
+
+function isPdfLink(url) {
+  if (!url) return false;
+  const lower = url.toLowerCase();
+  return lower.includes('.pdf') || lower.includes('libgen.is') || lower.includes('pdf');
+}
+
 // ── ERAS ──────────────────────────────────────────────────────
 function renderEras() {
   const sec = document.getElementById('page-eras');
@@ -301,7 +334,9 @@ function renderEras() {
       <div class="count">${count}</div>
       <div class="count-label">entr${count === 1 ? 'y' : 'ies'} — click to expand</div>`;
     card.addEventListener('click', () => {
-      const tbl = document.getElementById(`era-table-${era.id}`);
+      // Create a safe ID from the era name
+      const safeId = era.name.replace(/[^a-zA-Z0-9]/g, '-');
+      const tbl = document.getElementById(`era-table-${safeId}`);
       if (tbl) tbl.style.display = tbl.style.display === 'none' ? 'block' : 'none';
     });
     grid.appendChild(card);
@@ -313,8 +348,10 @@ function renderEras() {
     const eraEntries = entries.filter(e => e.era === era.name);
     if (!eraEntries.length) return;
 
+    // Create a safe ID from the era name
+    const safeId = era.name.replace(/[^a-zA-Z0-9]/g, '-');
     const section = document.createElement('div');
-    section.id = `era-table-${era.id}`;
+    section.id = `era-table-${safeId}`;
     section.style.display = 'none';
     section.style.marginBottom = '2.5rem';
     section.innerHTML = `
